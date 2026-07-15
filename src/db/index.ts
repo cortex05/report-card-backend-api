@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import { pool } from "./client";  
+import { pool } from "./client";
+import * as schema from "./schema"; 
 
 // Drizzle database connection source
-export const db = drizzle(pool);
+export const db = drizzle(pool, { schema });

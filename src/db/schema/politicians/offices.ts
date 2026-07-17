@@ -7,7 +7,7 @@ export const offices = pgTable("offices", {
 
   level: varchar("level", { length: 50 }).notNull(),
 
-  branch: varchar("branch", { length: 50 }).notNull(),
+  branch: varchar("branch", { length: 50 }),
 
-  chamber: varchar("chamber", { length: 50 }).notNull(),
+  chamber: varchar("chamber", { length: 50 }),
 });

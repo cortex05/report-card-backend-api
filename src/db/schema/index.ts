@@ -1,3 +1,3 @@
 export * from "./politicians/politicians";
 export * from "./politicians/offices";
-export * from "./politicians/politicianOffices";
+export * from "./politicians/politician-Offices";

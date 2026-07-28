@@ -1,5 +1,6 @@
 import { getMemberByBioguideId } from "../importers/congress/congressClient";
 import { mapCongressMemberToPolitician } from "../importers/congress/mappers/politicianMapper";
+import { politicianRepository } from "../db/repositories/politicianRepository";
 
 // converts API data into database model
 
@@ -16,10 +17,21 @@ export const main = async () => {
 
   const politician = mapCongressMemberToPolitician(member);
 
-  console.log("Mapped politician:");
-  console.dir(politician, { depth: null });
+  const existingPolitician = await politicianRepository.getByBioguideId(
+    politician.bioguideId
+  );
 
-  console.dir(member, { depth: null });
+  const importedPolitician = existingPolitician
+    ? await politicianRepository.update(politician.bioguideId, politician)
+    : await politicianRepository.create(politician);
+
+  const action = existingPolitician ? "updated" : "created";
+
+  console.log(`Politician ${action} successfully: `, importedPolitician);
+  // console.log("Mapped politician:");
+  // console.dir(politician, { depth: null });
+
+  // console.dir(member, { depth: null });
 }
 
 main().catch((error) => {

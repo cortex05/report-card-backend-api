@@ -1,4 +1,5 @@
 import { getMemberByBioguideId } from "../importers/congress/congressClient";
+import { mapCongressMemberToPolitician } from "../importers/congress/mappers/politicianMapper";
 
 // converts API data into database model
 
@@ -12,6 +13,11 @@ export const main = async () => {
   console.log("Fetching politician...");
 
   const member = await getMemberByBioguideId(bioguideId);
+
+  const politician = mapCongressMemberToPolitician(member);
+
+  console.log("Mapped politician:");
+  console.dir(politician, { depth: null });
 
   console.dir(member, { depth: null });
 }

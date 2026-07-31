@@ -1,0 +1,1 @@
+ALTER TABLE "offices" ADD CONSTRAINT "office_unique" UNIQUE("name","level","branch","chamber");

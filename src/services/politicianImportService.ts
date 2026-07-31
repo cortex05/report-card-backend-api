@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { politicianRepository } from "../repositories/politicianRepository";
-import { PoliticianInsert } from "../mappers/politicianMapper";
+import { PoliticianInsert } from "../db/schema/Types";
 
 export const importPolitician = async (politician: PoliticianInsert) => {
   return db.transaction(async (tx) => {

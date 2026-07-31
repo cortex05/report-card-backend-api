@@ -1,7 +1,7 @@
 import { db } from "../db/index";
 import { eq } from "drizzle-orm";
 import { politicians } from "../db/schema/politicians/politicians";
-import type { PoliticianInsert } from "../mappers/politicianMapper";
+import { PoliticianInsert } from "../db/schema/Types";
 import { Database } from "../db/types";
 
 const create = async (

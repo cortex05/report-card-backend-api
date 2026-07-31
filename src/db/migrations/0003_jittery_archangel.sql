@@ -1,0 +1,1 @@
+ALTER TABLE "offices" ALTER COLUMN "branch" SET NOT NULL;

@@ -20,7 +20,11 @@ export const bills = pgTable(
 
     originChamber: varchar("origin_chamber", { length: 50 }),
 
-    sourceId: varchar("source_id", { length: 100 }),
+    congressApiUrl: varchar("congress_api_url", { length: 100 }),
+
+    summary: text("summary"),
+
+    policyArea: varchar("policy_area", { length: 100 }),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
 

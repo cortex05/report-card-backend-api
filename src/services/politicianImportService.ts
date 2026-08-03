@@ -29,7 +29,11 @@ export const importPolitician = async (request: ImportPoliticianRequest) => {
       const officeDefinition = mapCongressTermToOfficeDefinition(term);
       const office = await officeRepository.getOrCreate (tx, officeDefinition);
       const politicianOffice = mapCongressTermToPoliticianOffice(politician.id, office.id, term);
-      await politicianOfficeRepository.create(tx, politicianOffice);
+      const existingPoliticianOffice = await politicianOfficeRepository.getByDefinition(tx, politician.id, office.id, politicianOffice.startDate);
+
+      if (!existingPoliticianOffice) {
+        await politicianOfficeRepository.create(tx, politicianOffice);
+      }
     }
     return politician;
   });

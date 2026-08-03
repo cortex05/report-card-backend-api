@@ -1,13 +1,7 @@
 import { offices } from "../db/schema/politicians/offices";
 import { eq, and } from "drizzle-orm";
 import { Database } from "../db/types";
-
-export type OfficeDefinition = {
-  name: string;
-  level: string;
-  branch: string;
-  chamber: string | null;
-};
+import { OfficeDefinition } from "../db/schema/Types";
 
 const getByDefinition = async (database: Database, definition: OfficeDefinition) => {
   const conditions = [

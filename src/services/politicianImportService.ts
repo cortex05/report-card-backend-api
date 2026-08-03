@@ -1,18 +1,36 @@
 import { db } from "../db";
 import { politicianRepository } from "../repositories/politicianRepository";
-import { PoliticianInsert } from "../db/schema/Types";
+import { OfficeTerm, PoliticianInsert } from "../db/schema/Types";
+import { mapCongressTermToOfficeDefinition } from "../mappers/officeMapper";
+import { officeRepository } from "../repositories/officeRepository";
+import { politicianOfficeRepository } from "../repositories/politicianOfficeRepository";
+import { mapCongressTermToPoliticianOffice } from "../mappers/politicianOfficeMapper";
 
-export const importPolitician = async (politician: PoliticianInsert) => {
+type ImportPoliticianRequest = {
+  politician: PoliticianInsert;
+  terms: OfficeTerm[];
+}
+
+export const importPolitician = async (request: ImportPoliticianRequest) => {
   return db.transaction(async (tx) => {
     const existing = await politicianRepository.getByBioguideId(
       tx,
-      politician.bioguideId
+      request.politician.bioguideId
     );
+    let politician = null
 
     if (existing) {
-      return politicianRepository.update(tx, politician.bioguideId, politician);
+      politician = await politicianRepository.update(tx, request.politician.bioguideId, request.politician);
+    } else {
+      politician = await politicianRepository.create(tx, request.politician);
     }
 
-    return politicianRepository.create(tx, politician);
+    for (const term of request.terms) {
+      const officeDefinition = mapCongressTermToOfficeDefinition(term);
+      const office = await officeRepository.getOrCreate (tx, officeDefinition);
+      const politicianOffice = mapCongressTermToPoliticianOffice(politician.id, office.id, term);
+      await politicianOfficeRepository.create(tx, politicianOffice);
+    }
+    return politician;
   });
 };

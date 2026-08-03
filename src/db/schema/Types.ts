@@ -8,6 +8,23 @@ export interface PoliticianInsert {
   imageUrl?: string | null;
 }
 
+export interface OfficeTerm {
+  chamber: string;
+  congress: number;
+  endYear: number;
+  memberType: string;
+  startYear: number;
+  stateCode: string;
+  stateName: string;
+}
+
+export interface OfficeDefinition {
+  name: string;
+  level: string;
+  branch: string;
+  chamber?: string | null;
+}
+
 // Congress mapper interfaces
 interface LegislationSummary {
   count: number;

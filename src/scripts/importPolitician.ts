@@ -17,7 +17,7 @@ export const main = async () => {
 
   const politician = mapCongressMemberToPolitician(member);
 
-  const importedPolitician = await importPolitician(politician);
+  const importedPolitician = await importPolitician({politician, terms: member.member.terms});
 
   console.log(`Politician imported successfully: `, importedPolitician);
 }

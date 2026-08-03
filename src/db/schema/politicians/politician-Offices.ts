@@ -2,6 +2,7 @@ import { date, pgTable, unique, uuid, varchar } from "drizzle-orm/pg-core";
 import { politicians } from "./politicians";
 import { offices } from "./offices";
 import { relations } from "drizzle-orm/relations";
+import { InferInsertModel } from "drizzle-orm";
 
 export const politicianOffices = pgTable("politician_offices", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -42,3 +43,5 @@ export const politicianOfficeRelations = relations(
     }),
   })
 );
+
+export type PoliticianOfficeInsert = InferInsertModel<typeof politicianOffices>;

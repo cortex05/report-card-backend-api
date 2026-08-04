@@ -1,7 +1,7 @@
-import { CongressMemberResponse, PoliticianInsert } from "../db/schema/Types";
+import { PoliticianInsert } from "../db/schema/Types";
+import { CongressMember } from "../types/congress/member";
 
-export const mapCongressMemberToPolitician = (response: CongressMemberResponse): PoliticianInsert => {
-  const member = response.member;
+export const mapCongressMemberToPolitician = (member: CongressMember): PoliticianInsert => {
   const birthYear = Number.parseInt(member.birthYear, 10);
   const latestTerm = member.terms.length > 0 ? member.terms[member.terms.length - 1] : undefined;
 

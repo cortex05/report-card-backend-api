@@ -8,7 +8,7 @@ export const bills = pgTable(
 
     congress: integer("congress").notNull(),
 
-    billType: varchar("bill_type", { length: 10 }).notNull(),
+    billType: varchar("bill_type", { length: 20 }).notNull(),
 
     billNumber: integer("bill_number").notNull(),
 
@@ -20,8 +20,6 @@ export const bills = pgTable(
 
     originChamber: varchar("origin_chamber", { length: 50 }),
 
-    congressApiUrl: varchar("congress_api_url", { length: 100 }),
-
     summary: text("summary"),
 
     policyArea: varchar("policy_area", { length: 100 }),
@@ -29,15 +27,18 @@ export const bills = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
 
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
+
+    lastSyncedAt: timestamp("last_synced_at").defaultNow(),
   },
   (table) => ({
+    // sourceUnique: unique().on(table.sourceId),
     billUnique: unique("bill_unique").on(
       table.congress,
       table.billType,
       table.billNumber
     ),
-    titleIdx: index("bills_title_idx").on(table.title),
   })
 );
 
+export type Bill = InferInsertModel<typeof bills>;
 export type BillInsert = InferInsertModel<typeof bills>;

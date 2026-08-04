@@ -1,6 +1,7 @@
-import { getMemberByBioguideId } from "../clients/congressClient";
+import { memberClient } from "../clients/memberClient";
 import { mapCongressMemberToPolitician } from "../mappers/politicianMapper";
 import { importPolitician } from "../services/politicianImportService";
+import { CongressMember } from "../types/congress/member";
 
 // converts API data into database model
 
@@ -13,9 +14,9 @@ export const main = async () => {
 
   console.log("Fetching politician...");
 
-  const member = await getMemberByBioguideId(bioguideId);
+  const member = await memberClient.get(bioguideId);
 
-  const politician = mapCongressMemberToPolitician(member);
+  const politician = mapCongressMemberToPolitician(member.member);
 
   const importedPolitician = await importPolitician({politician, terms: member.member.terms});
 

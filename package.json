@@ -10,7 +10,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "import:politician": "tsx src/scripts/importPolitician.ts"
+    "import:politician": "tsx src/scripts/importPolitician.ts",
+    "import:bill": "tsx src/scripts/importBill.ts"
   },
   "author": "Daniel Cortes",
   "license": "ISC",

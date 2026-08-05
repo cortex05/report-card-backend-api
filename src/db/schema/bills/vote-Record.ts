@@ -1,15 +1,9 @@
-import { pgTable, unique, uuid, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, unique, uuid } from "drizzle-orm/pg-core";
 import { votes } from "./votes";
 import { politicians } from "../politicians/politicians";
 import { relations } from "drizzle-orm/relations";
 import { InferInsertModel } from "drizzle-orm";
-
-const voteValueEnum = pgEnum("vote_value", [
-  "yea",
-  "nay",
-  "present",
-  "not_voting",
-]);
+import { voteValueEnum } from "../enums";
 
 export const voteRecords = pgTable("vote_records", {
   id: uuid("id").primaryKey().defaultRandom(),

@@ -1,15 +1,36 @@
 export interface CongressBill {
   congress: number;
-  type: string;
   number: string;
+  type: string;
   title: string;
-  originDate: string;
-  originChamberDate: string;
-  latestAction?: {
-    actionDate: string;
-    text: string;
-  }
-  updateDate: string;
-  updateDateIncludingText: string;
+  introducedDate?: string;
+  originChamber: string;
+  policyArea?: {
+    name: string;
+  };
+  sponsors: CongressBillSponsor[];
+}
+
+interface CongressBillSponsor {
+  bioguideId: string;
+  firstName: string;
+  fullName: string;
+  isByRequest: string;
+  lastName: string;
+  party: string;
+  state: string;
   url: string;
 }
+
+export interface CongressBillResponse {
+  bill: CongressBill;
+  request: CongressBillRequest;
+}
+
+interface CongressBillRequest {
+  congress: string;
+  billType: string;
+  billNumber: string;
+  contentType: string;
+  format: string;
+};

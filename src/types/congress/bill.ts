@@ -3,6 +3,10 @@ export interface CongressBill {
   number: string;
   type: string;
   title: string;
+  latestAction?: {
+    text: string;
+    actionDate: string;
+  };
   introducedDate?: string;
   originChamber: string;
   policyArea?: {

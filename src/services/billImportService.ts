@@ -20,7 +20,11 @@ export const importBill = async (
     );
 
     if (existing) {
-      return billRepository.update(tx, existing.id, { ...bill, lastSyncedAt: new Date() });
+      const updatedBill = { 
+        ...bill, 
+        lastSyncedAt: new Date() 
+      };
+      return billRepository.update(tx, existing.id, updatedBill);
     }
 
     return billRepository.create(tx, bill);

@@ -1,17 +1,11 @@
 import { db } from "../db";
 import { politicianRepository } from "../repositories/politicianRepository";
-import { OfficeTerm, PoliticianInsert } from "../db/schema/Types";
 import { mapCongressTermToOfficeDefinition } from "../mappers/officeMapper";
 import { officeRepository } from "../repositories/officeRepository";
 import { politicianOfficeRepository } from "../repositories/politicianOfficeRepository";
 import { mapCongressTermToPoliticianOffice } from "../mappers/politicianOfficeMapper";
 import { mapCongressMemberToPolitician } from "../mappers/politicianMapper";
 import { memberClient } from "../clients/memberClient";
-
-type ImportPoliticianRequest = {
-  politician: PoliticianInsert;
-  terms: OfficeTerm[];
-}
 
 export const importPolitician = async (bioguideId: string) => {
   return db.transaction(async (tx) => {
@@ -22,13 +16,12 @@ export const importPolitician = async (bioguideId: string) => {
       tx,
       mappedPolitician.bioguideId
     );
-    let politician = null
-
-    if (existing) {
-      politician = await politicianRepository.update(tx, mappedPolitician.bioguideId, mappedPolitician);
-    } else {
-      politician = await politicianRepository.create(tx, mappedPolitician);
-    }
+    
+    const politician = existing ? await politicianRepository.update(
+      tx,
+      mappedPolitician.bioguideId,
+      mappedPolitician
+    ) : await politicianRepository.create(tx, mappedPolitician);
 
     for (const term of member.member.terms) {
       const officeDefinition = mapCongressTermToOfficeDefinition(term);

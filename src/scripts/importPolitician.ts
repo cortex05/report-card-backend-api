@@ -13,14 +13,9 @@ export const main = async () => {
   }
 
   console.log("Fetching politician...");
-
-  const member = await memberClient.get(bioguideId);
-
   // console.log(`Politician fetched successfully: `, JSON.stringify(member.member, null, 2));
 
-  const politician = mapCongressMemberToPolitician(member.member);
-
-  const importedPolitician = await importPolitician({politician, terms: member.member.terms});
+  const importedPolitician = await importPolitician(bioguideId);
 
   console.log(`Politician imported successfully: `, importedPolitician);
 }

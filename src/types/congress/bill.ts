@@ -15,7 +15,7 @@ export interface CongressBill {
   sponsors: CongressBillSponsor[];
 }
 
-interface CongressBillSponsor {
+export interface CongressBillSponsor {
   bioguideId: string;
   firstName: string;
   fullName: string;

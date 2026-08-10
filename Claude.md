@@ -14,6 +14,7 @@ TypeScript runs directly via `tsx` — there is no compile/build step and no `ts
 
 - `npm run test:db` — sanity-check the DB connection (`SELECT version()`)
 - `npm run import:politician <bioguideId>` — end-to-end import of one Congress member (e.g. `npm run import:politician A000360`)
+- `npm run import:bill` — import a single bill (the identifier `119 / hr / 1` is currently hardcoded in `src/scripts/importBill.ts`, not passed as args)
 - `npm run db:generate` — generate a migration from schema changes
 - `npm run db:migrate` — apply pending migrations
 - `npm run db:push` — push schema directly to the DB without a migration file
@@ -30,28 +31,33 @@ This is the backend for a political "report card" app. The Express server (`serv
 Data flows through distinct layers, one direction only:
 
 ```
-script (entrypoint) → client (external API) → mapper → service (transaction) → repository → Drizzle schema → Postgres
+script (parse args) → service (transaction boundary) → repository → Drizzle schema → Postgres
+                          │  ├─ resource client → congressClient.get<T> → congress.gov API
+                          │  └─ mapper (pure: API shape → DB insert shape)
 ```
 
-- **`src/scripts/`** — CLI entrypoints run via `tsx`. They read args, call a client, map, then a service. See `importPolitician.ts`.
-- **`src/clients/`** — thin wrappers over external HTTP APIs. `congressClient.ts` talks to `https://api.congress.gov/v3`.
+- **`src/scripts/`** — CLI entrypoints run via `tsx`. Thin: parse args, call one service, log the result. See `importPolitician.ts` / `importBill.ts`.
+- **`src/services/`** — own the **whole import flow**: fetch via a client, map, then run repository calls inside a single `db.transaction(...)`. They take a plain identifier (`importPolitician(bioguideId)`, `importBill(congress, billType, billNumber)`) — **not** pre-mapped data. This is where upsert/idempotency logic lives.
+- **`src/clients/`** — two tiers. `congressClient.ts` is a low-level generic HTTP wrapper: `congressClient.get<T>(endpoint)` (adds base URL + API key, throws on non-2xx). Per-resource clients (`memberClient.ts`, `billClient.ts`) wrap it, own the endpoint path, and type the response.
 - **`src/mappers/`** — pure functions converting external API shapes → DB insert shapes. No I/O.
-- **`src/services/`** — orchestration and business logic; own the DB transaction boundary via `db.transaction(...)`. `politicianImportService.ts` upserts a politician and, for each term, get-or-creates an office and links the two.
-- **`src/repositories/`** — the only place that touches Drizzle tables. Grouped by function object (e.g. `politicianRepository = { create, getByBioguideId, update }`).
+- **`src/repositories/`** — the only place that touches Drizzle tables. Grouped by function object (e.g. `billRepository = { create, update, getById, getByIdentifier }`).
 - **`src/db/schema/`** — Drizzle table definitions and relations.
 
 ### Two conventions that matter
 
 1. **Every repository function takes a `Database` as its first argument** (`src/db/types.ts`: `type Database = typeof db | PgTransaction<...>`). Callers pass either the shared `db` or a transaction handle `tx`. This is what lets a service run multiple repository calls inside one `db.transaction`. When adding a repository method, follow this signature.
 
-2. **Idempotent imports.** Politicians are upserted by `bioguideId`; offices use a `getOrCreate` keyed by a uniqueness tuple (name/level/branch/chamber); the `politician_offices` link table has a unique constraint on (politician, office, start_date). Re-running an import should not duplicate rows.
+2. **Idempotent imports.** Services check-then-upsert inside the transaction: politicians upsert by `bioguideId`; bills look up by the `(congress, bill_type, bill_number)` identifier tuple then `update` vs `create`; offices use `getOrCreate` keyed by (name/level/branch/chamber); link tables (`politician_offices`, `bill_sponsors`, `vote_records`) have unique constraints and are guarded by a `getByDefinition`-style check before insert. Re-running an import should not duplicate rows. When a mapper normalizes a value (e.g. `billMapper` lowercases `billType`), the lookup must use the **mapped** value so it matches what `create` would store.
+
+### Types: two homes
+
+- **`src/types/congress/`** (`member.ts`, `bill.ts`) — hand-written interfaces for the **external** congress.gov response shapes (`CongressMemberResponse`, `CongressBill`, etc.). This is what clients return and mappers consume.
+- **`src/db/schema/Types.ts`** — **internal** insert/definition types not tied to one table (`PoliticianInsert`, `OfficeTerm`, `OfficeDefinition`).
+- **Per-table insert types** are inferred with `InferInsertModel` and exported from the schema file itself (e.g. `BillInsert`, `OfficeInsert`, `PoliticianOfficeInsert`).
 
 ### Database
 
 - Drizzle ORM over `pg` with a single shared `Pool` (`src/db/client.ts`) → `db` (`src/db/index.ts`).
 - `drizzle.config.ts` globs `./src/db/schema/**/*.ts`; migrations are written to `./src/db/migrations`.
-- **`src/db/schema/index.ts` only re-exports the `politicians`, `offices`, and `politician_offices` tables** — those are the active schema. Other files under `src/db/schema/` (`bills/`, `committees/`, `organizations/`, `users/`, `billEmbeddings.ts`, `syncJobs.ts`) are stubs/future work and are not wired into the exported schema or the app.
-
-### Shared types
-
-`src/db/schema/Types.ts` holds the hand-written interfaces for the congress.gov API response shape (`CongressMemberResponse`, `TermRecord`, etc.) and the internal insert/definition types. DB-row insert types are instead inferred per-table with `InferInsertModel` and exported from the schema file (e.g. `OfficeInsert`, `PoliticianOfficeInsert`).
+- **Active schema** (re-exported from `src/db/schema/index.ts`): the `politicians` domain (`politicians`, `offices`, `politician_offices`) and the `bills` domain (`bills`, `bill_sponsors`, `votes`, `vote_records`).
+- Still stubs/future work, **not** wired into the exported schema or the app: `committees/`, `organizations/`, `users/`, `billEmbeddings.ts`, `syncJobs.ts`.

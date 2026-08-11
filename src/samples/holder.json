@@ -1,0 +1,39 @@
+{
+  "congress": 119,
+  "identifier": 1191202517,
+  "legislationNumber": "30",
+  "legislationType": "HR",
+  "legislationUrl": "https://congress.gov/bill/119/house-bill/30",
+  "result": "Passed",
+  "rollCallNumber": 17,
+  "sessionNumber": 1,
+  "voteQuestion": "Call by States",
+  "sourceDataURL": "https://clerk.house.gov/evs/2025/roll017.xml",
+  "startDate": "2025-01-16T11:00:00-05:00",
+  "updateDate": "2025-04-18T08:44:47-04:00",
+  "voteType": "Yea-and-Nay",
+  "results": [
+      {
+        "bioguideID": "Y000067",
+        "firstName": "Rudy",
+        "lastName": "Yakym",
+        "voteCast": "Present",
+        "voteParty": "R",
+        "voteState": "IN"
+      },
+      {
+        "bioguideID": "Z000018",
+        "firstName": "Ryan",
+        "lastName": "Zinke",
+        "voteCast": "Present",
+        "voteParty": "R",
+        "voteState": "MT"
+      }
+    ],
+  "request": {
+    "congress": "119",
+    "contentType": "application/json",
+    "format": "json",
+    "session": "1"
+  }
+}

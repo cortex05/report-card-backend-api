@@ -17,3 +17,73 @@ export interface CongressHouseVote {
 export interface CongressHouseVoteResponse {
   houseRollCallVotes: CongressHouseVote[];
 }
+
+// Roll-call detail: /house-vote/{congress}/{session}/{rollCall}
+export interface HouseRollCallVoteResponse {
+  houseRollCallVote: HouseRollCallVote;
+  request: HouseVoteRequest;
+}
+
+interface HouseRollCallVote {
+  congress: number;
+  identifier: number;
+  legislationNumber: string;
+  legislationType: string;
+  legislationUrl: string;
+  result: string;
+  rollCallNumber: number;
+  sessionNumber: number;
+  sourceDataURL: string;
+  startDate: string;
+  updateDate: string;
+  votePartyTotal: VotePartyTotal[];
+  voteQuestion: string;
+  voteType: string;
+}
+
+interface VotePartyTotal {
+  nayTotal: number;
+  notVotingTotal: number;
+  party: {
+    name: string;
+    type: string;
+  };
+  presentTotal: number;
+  voteParty: string;
+  yeaTotal: number;
+}
+
+// Member breakdown: /house-vote/{congress}/{session}/{rollCall}/members
+export interface HouseRollCallVoteMemberResponse {
+  congress: number;
+  identifier: number;
+  legislationNumber: string;
+  legislationType: string;
+  legislationUrl: string;
+  result: string;
+  rollCallNumber: number;
+  sessionNumber: number;
+  voteQuestion: string;
+  sourceDataURL: string;
+  startDate: string;
+  updateDate: string;
+  voteType: string;
+  results: HouseRollCallVoteMember[];
+  request: HouseVoteRequest;
+}
+
+interface HouseRollCallVoteMember {
+  bioguideID: string;
+  firstName: string;
+  lastName: string;
+  voteCast: string;
+  voteParty: string;
+  voteState: string;
+}
+
+interface HouseVoteRequest {
+  congress: string;
+  contentType: string;
+  format: string;
+  session: string;
+}

@@ -1,3 +1,4 @@
+import { HouseRollCallVoteMemberResponse, HouseRollCallVoteResponse } from "../types/congress/vote";
 import { billClient } from "./billClient";
 import { congressClient } from "./congressClient";
 
@@ -16,7 +17,7 @@ const getHouseRollCall = async (
   congress: number,
   session: number,
   rollCallNumber: number
-): Promise<any> => {
+): Promise<HouseRollCallVoteResponse> => {
   const response = await congressClient.get<any>(
     `/house-vote/${congress}/${session}/${rollCallNumber}`
   );
@@ -27,7 +28,7 @@ const getHouseRollCallMembers = async (
   congress: number,
   session: number,
   rollCallNumber: number
-): Promise<any> => {
+): Promise<HouseRollCallVoteMemberResponse> => {
   const response = await congressClient.get<any>(
     `/house-vote/${congress}/${session}/${rollCallNumber}/members`
   );

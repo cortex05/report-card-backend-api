@@ -1,4 +1,6 @@
 {
+
+"houseRollCallVoteMemberVotes": {
   "congress": 119,
   "identifier": 1191202517,
   "legislationNumber": "30",
@@ -29,11 +31,12 @@
         "voteParty": "R",
         "voteState": "MT"
       }
-    ],
-  "request": {
+    ]
+},"request": {
     "congress": "119",
     "contentType": "application/json",
     "format": "json",
     "session": "1"
   }
+
 }

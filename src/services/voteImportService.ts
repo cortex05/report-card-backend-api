@@ -15,7 +15,6 @@ export const importHouseRollCall = async (
 ) => {
   const rollCallResponse = await voteClient.getHouseRollCall(congress, session, rollCallNumber);
   const membersResponse = await voteClient.getHouseRollCallMembers(congress, session, rollCallNumber);
-  // console.log("MEMBERS RESPONSE: ", membersResponse);
   const rollCall = rollCallResponse.houseRollCallVote;
 
   // Ensure the referenced bill exists first (its own transaction, idempotent)

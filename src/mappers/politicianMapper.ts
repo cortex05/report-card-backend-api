@@ -1,6 +1,7 @@
 import { PoliticianInsert } from "../db/schema/Types";
 import { CongressMember } from "../types/congress/member";
 import { CongressBillSponsor } from "../types/congress/bill";
+import { HouseRollCallVoteMember } from "../types/congress/vote";
 
 export const mapCongressMemberToPolitician = (member: CongressMember): PoliticianInsert => {
   const birthYear = Number.parseInt(member.birthYear, 10);
@@ -17,13 +18,22 @@ export const mapCongressMemberToPolitician = (member: CongressMember): Politicia
   };
 }
 
-// Minimal politician built from a bill sponsor payload, used to get-or-create
-// a stub before linking. A later importPolitician run fills in the rest.
 export const mapCongressSponsorToPolitician = (sponsor: CongressBillSponsor): PoliticianInsert => {
   return {
     bioguideId: sponsor.bioguideId,
     firstName: sponsor.firstName,
     lastName: sponsor.lastName,
     stateCode: sponsor.state ?? null,
+  };
+}
+
+// Minimal politician built from a roll-call member payload, used to
+// get-or-create a stub before linking a vote record.
+export const mapHouseRollCallMemberToPolitician = (member: HouseRollCallVoteMember): PoliticianInsert => {
+  return {
+    bioguideId: member.bioguideID,
+    firstName: member.firstName,
+    lastName: member.lastName,
+    stateCode: member.voteState ?? null,
   };
 }

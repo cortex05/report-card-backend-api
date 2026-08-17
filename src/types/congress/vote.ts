@@ -72,7 +72,7 @@ export interface HouseRollCallVoteMemberResponse {
   request: HouseVoteRequest;
 }
 
-interface HouseRollCallVoteMember {
+export interface HouseRollCallVoteMember {
   bioguideID: string;
   firstName: string;
   lastName: string;

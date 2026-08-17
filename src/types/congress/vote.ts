@@ -55,21 +55,25 @@ interface VotePartyTotal {
 
 // Member breakdown: /house-vote/{congress}/{session}/{rollCall}/members
 export interface HouseRollCallVoteMemberResponse {
+  houseRollCallVoteMemberVotes: HouseRollCallMemberVotes,
+  request: HouseVoteRequest;
+}
+
+export interface HouseRollCallMemberVotes {
   congress: number;
   identifier: number;
   legislationNumber: string;
   legislationType: string;
   legislationUrl: string;
   result: string;
+  results: HouseRollCallVoteMember[];
   rollCallNumber: number;
   sessionNumber: number;
-  voteQuestion: string;
   sourceDataURL: string;
   startDate: string;
   updateDate: string;
+  voteQuestion: string;
   voteType: string;
-  results: HouseRollCallVoteMember[];
-  request: HouseVoteRequest;
 }
 
 export interface HouseRollCallVoteMember {

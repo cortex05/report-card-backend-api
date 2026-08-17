@@ -1,11 +1,14 @@
 import { voteClient } from "../clients/voteClient";
+import { importHouseRollCall } from "../services/voteImportService";
 
 export const main = async () => {
-  // await voteClient.getHouseVotes();
-  const result = await voteClient.getHouseRollCall(119,1,138);
-  // const result = await voteClient.getHouseRollCallMembers(119,1,138);
+  const congressNumber = Number(process.argv[2]);
+  const session = Number(process.argv[3]);
+  const voteRoll = Number(process.argv[4]);
 
-  console.log(`House votes fetched successfully: `, JSON.stringify(result, null, 2));
+  const voteRecord = await importHouseRollCall(congressNumber, session, voteRoll)
+
+  console.log(`House votes fetched successfully: `, JSON.stringify(voteRecord, null, 2));
 };
 
 main().catch((error) => {

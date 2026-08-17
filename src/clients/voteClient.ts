@@ -32,6 +32,7 @@ const getHouseRollCallMembers = async (
   const response = await congressClient.get<any>(
     `/house-vote/${congress}/${session}/${rollCallNumber}/members`
   );
+  console.log("RESPONSE: ", response.houseRollCallVoteMemberVotes.results)
   return response;
 }; 
 

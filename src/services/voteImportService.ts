@@ -15,6 +15,7 @@ export const importHouseRollCall = async (
 ) => {
   const rollCallResponse = await voteClient.getHouseRollCall(congress, session, rollCallNumber);
   const membersResponse = await voteClient.getHouseRollCallMembers(congress, session, rollCallNumber);
+  // console.log("MEMBERS RESPONSE: ", membersResponse);
   const rollCall = rollCallResponse.houseRollCallVote;
 
   // Ensure the referenced bill exists first (its own transaction, idempotent)
@@ -39,7 +40,7 @@ export const importHouseRollCall = async (
       ? await voteRepository.update(tx, existingVote.id, voteInsert)
       : await voteRepository.create(tx, voteInsert);
 
-    for (const member of membersResponse.results) {
+    for (const member of membersResponse.houseRollCallVoteMemberVotes.results) {
       const existingPolitician = await politicianRepository.getByBioguideId(tx, member.bioguideID);
       const politician = existingPolitician ?? await politicianRepository.create(
         tx,

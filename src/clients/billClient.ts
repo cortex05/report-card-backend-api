@@ -1,5 +1,5 @@
 import { congressClient } from "./congressClient";
-import { CongressBill, CongressBillResponse } from "../types/congress/bill";
+import { CongressBill, CongressBillAction, CongressBillResponse } from "../types/congress/bill";
 
 const getBill = async (
   congress: number,
@@ -18,11 +18,11 @@ const getBillActions = async (
   congress: number,
   billType: string,
   billNumber: number
-): Promise<any> => {
-  const response = await congressClient.get<any>(
+): Promise<CongressBillAction[]> => {
+  const response = await congressClient.get<{actions: CongressBillAction[]}>(
     `/bill/${congress}/${billType}/${billNumber}/actions`
   );
-  return response.actions;
+  return response.actions; 
 }; 
 
 export const billClient = {

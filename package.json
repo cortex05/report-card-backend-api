@@ -12,7 +12,8 @@
     "db:studio": "drizzle-kit studio",
     "import:politician": "tsx src/scripts/importPolitician.ts",
     "import:bill": "tsx src/scripts/importBill.ts",
-    "import:vote": "tsx src/scripts/importVotes.ts"
+    "import:vote": "tsx src/scripts/importVotes.ts",
+    "import:call": "tsx src/scripts/testingCalls.ts"
   },
   "author": "Daniel Cortes",
   "license": "ISC",

@@ -37,4 +37,26 @@ interface CongressBillRequest {
   billNumber: string;
   contentType: string;
   format: string;
-};
+}; 
+
+export interface CongressBillAction {
+  actionCode?: string;
+  actionDate?: string;
+  actionTime?: string;
+  sourceSystem: {
+    code?: number;
+    name: string;
+  };
+  text: string;
+  type: string;
+  recordedVotes?: CongressRecordedVote[];
+}
+
+export interface CongressRecordedVote {
+  chamber: "House" | "Senate";
+  congress: number;
+  date: string;
+  rollNumber: number;
+  sessionNumber: number;
+  url: string;
+}

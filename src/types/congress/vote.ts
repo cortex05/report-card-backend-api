@@ -91,3 +91,12 @@ interface HouseVoteRequest {
   format: string;
   session: string;
 }
+
+export interface RecordedVoteReference {
+  chamber: "House" | "Senate";
+  congress: number;
+  sessionNumber: number;
+  rollNumber: number;
+  date: string;
+  url: string;
+}

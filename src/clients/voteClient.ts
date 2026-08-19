@@ -16,7 +16,7 @@ const getHouseVotes = async () => {
 const getHouseRollCall = async (
   congress: number,
   session: number,
-  rollCallNumber: number
+  rollCallNumber: number 
 ): Promise<HouseRollCallVoteResponse> => {
   const response = await congressClient.get<any>(
     `/house-vote/${congress}/${session}/${rollCallNumber}`

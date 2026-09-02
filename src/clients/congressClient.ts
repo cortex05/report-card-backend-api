@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+
 dotenv.config();
 
 // talk to congress.gov
@@ -29,7 +30,6 @@ const get = async <T>(
   return response.json() as Promise<T>;
 };
 
-
 export const congressClient = {
-  get,
+  get
 };

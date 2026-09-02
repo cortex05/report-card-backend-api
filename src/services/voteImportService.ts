@@ -60,7 +60,9 @@ export const syncHouseRollCall = async (
     const voteRecord = mapHouseRollCallMemberToVoteRecord(vote.id, politician.id, member);
     const existingRecord = await voteRecordRepository.getByDefinition(tx, vote.id, politician.id);
 
-    if (!existingRecord) {
+    if (existingRecord) {
+      await voteRecordRepository.update(tx, existingRecord.id, voteRecord);
+    } else {
       await voteRecordRepository.create(tx, voteRecord);
     }
   }

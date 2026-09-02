@@ -10,6 +10,20 @@ const create = async (database: Database, voteRecord: VoteRecordInsert) => {
   return created;
 };
 
+const update = async (
+  database: Database,
+  existingRecordId: string,
+  voteRecord: Partial<VoteRecordInsert>
+) => {
+  const [updated] = await database
+    .update(voteRecords)
+    .set(voteRecord)
+    .where(eq(voteRecords.id, existingRecordId))
+    .returning();
+
+  return updated;
+};
+
 const getByDefinition = async (
   database: Database,
   voteId: string,
@@ -31,5 +45,6 @@ const getByDefinition = async (
 
 export const voteRecordRepository = {
   create,
+  update,
   getByDefinition,
 };

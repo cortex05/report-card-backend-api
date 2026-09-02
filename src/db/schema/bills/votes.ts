@@ -7,7 +7,7 @@ import { text } from "drizzle-orm/pg-core";
 export const votes = pgTable("votes", {
   id: uuid("id").primaryKey().defaultRandom(),
 
-  billId: uuid("bill_id").references(() => bills.id).notNull().references(() => bills.id),
+  billId: uuid("bill_id").references(() => bills.id).notNull(),
 
   congress: integer("congress").notNull(),
 

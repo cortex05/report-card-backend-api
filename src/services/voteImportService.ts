@@ -13,22 +13,16 @@ import { Database } from "../db/types";
 export const importHouseRollCall = async (
   congress: number,
   session: number,
-  rollCallNumber: number) => {
+  rollCallNumber: number,
+  billId: string) => {
     const rollCallResponse = await voteClient.getHouseRollCall(congress, session, rollCallNumber);
     const membersResponse = await voteClient.getHouseRollCallMembers(congress, session, rollCallNumber);
-    const rollCall = rollCallResponse.houseRollCallVote;
-
-    const bill = await importBill(
-      rollCall.congress,
-      rollCall.legislationType.toLowerCase(),
-      Number.parseInt(rollCall.legislationNumber, 10)
-    );
 
     return db.transaction(async (tx) => {
-      return syncHouseRollCall(tx, rollCallResponse, membersResponse, bill.id)
+      return syncHouseRollCall(tx, rollCallResponse, membersResponse, billId)
     })
 
-  }
+}
 
 export const syncHouseRollCall = async (
   tx: Database,
@@ -65,6 +59,8 @@ export const syncHouseRollCall = async (
     } else {
       await voteRecordRepository.create(tx, voteRecord);
     }
+
+    
   }
 
   return vote;

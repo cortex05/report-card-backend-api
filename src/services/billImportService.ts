@@ -38,12 +38,9 @@ export const importBill = async (
     console.log(`START roll call: ${vote.congress}-${vote.sessionNumber}-${vote.rollNumber}`);
 
     if (vote.chamber !== "House") {
+      // NEED NEW LOGIC FOR SENATE HERE
       continue;
     }
-
-    console.log(
-      `START roll call: ${vote.congress}-${vote.sessionNumber}-${vote.rollNumber}`
-    );
 
     await importHouseRollCall(
       vote.congress,
@@ -56,10 +53,6 @@ export const importBill = async (
   }
 
   console.log("Recorded votes: ", recordedVotes)
-
-  return db.transaction(async (tx) => {
-    return syncBill(tx, congressBill);
-  });
 };
 
 export const syncBill = async (

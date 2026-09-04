@@ -13,6 +13,8 @@ import { CongressBill } from "../types/congress/bill";
 import { Database } from "../db/types";
 
 import { importHouseRollCall } from "./voteImportService";
+import { memberClient } from "../clients/memberClient";
+import { syncPolitician } from "./syncPoliticianService";
 
 export const importBill = async (
   congress: number,
@@ -52,7 +54,7 @@ export const importBill = async (
     console.log(`FINISHED roll call: ${vote.congress}-${vote.sessionNumber}-${vote.rollNumber}`);
   }
 
-  console.log("Recorded votes: ", recordedVotes)
+  return bill;
 };
 
 export const syncBill = async (
@@ -72,13 +74,11 @@ export const syncBill = async (
     ? await billRepository.update(tx, existing.id, { ...bill, lastSyncedAt: new Date() })
     : await billRepository.create(tx, bill);
   
+  console.log("Bill synced. Starting sponsors")
 
   for (const sponsor of congressBill.sponsors) {
-    const existingPolitician = await politicianRepository.getByBioguideId(tx, sponsor.bioguideId);
-    const politician = existingPolitician ?? await politicianRepository.create(
-      tx,
-      mapCongressSponsorToPolitician(sponsor)
-    );
+    const memberTarget = await memberClient.get(sponsor.bioguideId)
+    const politician = await syncPolitician(tx, memberTarget.member)
 
     const billSponsor = mapCongressSponsorToBillInsert(persistedBill.id, politician.id, sponsor);
     const existingSponsor = await billSponsorRepository.getByDefinition(
@@ -92,6 +92,8 @@ export const syncBill = async (
       await billSponsorRepository.create(tx, billSponsor);
     }
   }
+
+  console.log("End sponsors")
 
   return persistedBill;
 }

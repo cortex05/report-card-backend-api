@@ -9,6 +9,8 @@ import { voteRecordRepository } from "../repositories/voteRecordRepository";
 import { politicianRepository } from "../repositories/politicianRepository";
 import { HouseRollCallVoteMemberResponse, HouseRollCallVoteResponse } from "../types/congress/vote";
 import { Database } from "../db/types";
+import { syncPolitician } from "./syncPoliticianService";
+import { memberClient } from "../clients/memberClient";
 
 export const importHouseRollCall = async (
   congress: number,
@@ -45,9 +47,9 @@ export const syncHouseRollCall = async (
     : await voteRepository.create(tx, voteInsert);
 
   for (const member of membersResponse.houseRollCallVoteMemberVotes.results) {
-    const existingPolitician = await politicianRepository.getByBioguideId(tx, member.bioguideID);
-    const politician = existingPolitician ?? await politicianRepository.create(
-      tx,
+    // need to find a better way to handle syncPolitician
+    const existingPolitician = await politicianRepository.getByBioguideId(tx,member.bioguideID);
+    const politician = existingPolitician ?? await politicianRepository.create(tx,
       mapHouseRollCallMemberToPolitician(member)
     );
 

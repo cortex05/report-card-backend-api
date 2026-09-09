@@ -34,16 +34,6 @@ const getById = async (database: Database, id: string) => {
   return existing;
 }
 
-// const getBySourceId = async (database: Database, sourceId: string) => {
-//   const [existing] = await database
-//     .select()
-//     .from(bills)
-//     .where(eq(bills.sourceId, sourceId))
-//     .limit(1);
-
-//   return existing;
-// };
-
 const getByIdentifier = async (
   database: Database,
   congress: number,
@@ -71,3 +61,13 @@ export const billRepository = {
   getById,
   getByIdentifier,
 };
+
+// const getBySourceId = async (database: Database, sourceId: string) => {
+//   const [existing] = await database
+//     .select()
+//     .from(bills)
+//     .where(eq(bills.sourceId, sourceId))
+//     .limit(1);
+
+//   return existing;
+// };

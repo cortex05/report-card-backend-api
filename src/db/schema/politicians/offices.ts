@@ -19,6 +19,5 @@ export const offices = pgTable("offices", {
       table.branch,
       table.chamber
     ),
-  }));
+  }));export type OfficeInsert = InferInsertModel<typeof offices>;
 
-export type OfficeInsert = InferInsertModel<typeof offices>;

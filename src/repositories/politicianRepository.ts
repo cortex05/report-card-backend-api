@@ -4,6 +4,7 @@ import { politicians } from "../db/schema/politicians/politicians";
 import { PoliticianInsert } from "../db/schema/Types";
 import { Database } from "../db/types";
 
+// For the congress API
 const create = async (
   database: Database,
   politician: PoliticianInsert
@@ -36,8 +37,20 @@ const update = async (
   return updated;
 }
 
+// For the front end
+const getById = async (database: Database, id: string) => {
+  const [politician] = await database
+    .select()
+    .from(politicians)
+    .where(eq(politicians.id, id))
+    .limit(1);
+
+  return politician;
+};
+
 export const politicianRepository = {
   create,
   getByBioguideId,
   update,
+  getById
 };

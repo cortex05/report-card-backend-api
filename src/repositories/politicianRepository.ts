@@ -39,6 +39,7 @@ const update = async (
 
 // For the front end
 const getById = async (database: Database, id: string) => {
+  // this is for the "header" card
   const [politician] = await database
     .select()
     .from(politicians)

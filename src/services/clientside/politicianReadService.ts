@@ -14,6 +14,11 @@ const getSamplePolitician = async () => {
   return politicianRepository.getById(db, SAMPLE_ID);
 };
 
+const getPoliticianById = async (id: string) => {
+  return politicianRepository.getById(db, id);
+};
+
 export const politicianReadService = {
   getSamplePolitician,
+  getPoliticianById,
 };

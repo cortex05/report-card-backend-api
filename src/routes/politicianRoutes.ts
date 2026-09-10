@@ -8,8 +8,8 @@ router.get("/sample", politicianController.getSamplePolitician);
 
 // POLITICIAN PAGE
 router.get("/:id", politicianController.getPoliticianById);
+router.get("/:id/bills", politicianController.getPoliticianBillsSponsor);
 
-// GET /politicians/:id/bills
 // GET /politicians/:id/offices
 // GET /politicians/:id/votes
 

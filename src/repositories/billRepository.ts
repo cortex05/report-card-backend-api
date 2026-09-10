@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { bills, BillInsert } from "../db/schema/bills/bills";
 import { Database } from "../db/types";
+import { billSponsors } from "../db/schema/bills/bill-Sponsors";
 
 const create = async (database: Database, bill: BillInsert) => {
   const [created] = await database.insert(bills).values(bill).returning();
@@ -55,11 +56,38 @@ const getByIdentifier = async (
   return existing;
 };
 
+// For frontend
+const getPoliticianBillSponsorships = async (
+  database: Database,
+  politicianId: string
+) => {
+  return database
+    .select({
+      id: bills.id,
+      congress: bills.congress,
+      billType: bills.billType,
+      billNumber: bills.billNumber,
+      title: bills.title,
+      introducedDate: bills.introducedDate,
+      status: bills.status,
+      originChamber: bills.originChamber,
+      summary: bills.summary,
+      policyArea: bills.policyArea,
+    })
+    .from(bills)
+    .innerJoin(
+      billSponsors,
+      eq(billSponsors.billId, bills.id)
+    )
+    .where(eq(billSponsors.politicianId, politicianId));
+};
+
 export const billRepository = {
   create,
   update,
   getById,
   getByIdentifier,
+  getPoliticianBillSponsorships
 };
 
 // const getBySourceId = async (database: Database, sourceId: string) => {

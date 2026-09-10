@@ -1,4 +1,5 @@
 import { db } from "../../db";
+import { billRepository } from "../../repositories/billRepository";
 import { politicianRepository } from "../../repositories/politicianRepository";
 import dotenv from "dotenv";
 
@@ -18,7 +19,12 @@ const getPoliticianById = async (id: string) => {
   return politicianRepository.getById(db, id);
 };
 
+const getPoliticianBillSponorships = async (id: string) => {
+  return billRepository.getPoliticianBillSponsorships(db, id);
+}
+
 export const politicianReadService = {
   getSamplePolitician,
   getPoliticianById,
+  getPoliticianBillSponorships
 };

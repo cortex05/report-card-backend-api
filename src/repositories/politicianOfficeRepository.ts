@@ -27,7 +27,7 @@ const getByDefinition = async (database: Database, politicianId: string, officeI
 };
 
 const getAllOnePoliticianOffices = async (database: Database, politicianId: string) => {
-  const [officesResponse] = await database
+  const officesResponse = await database
     .select({
       id: politicianOffices.id,
       name: offices.name,
@@ -41,14 +41,14 @@ const getAllOnePoliticianOffices = async (database: Database, politicianId: stri
     .from(politicianOffices)
     .innerJoin(
       offices,
-      eq(politicianOffices.politicianId, politicianId)
+      eq(politicianOffices.officeId, offices.id)
     )
     .where(
       eq(politicianOffices.politicianId, politicianId)
     )
-    .orderBy(desc(politicianOffices.startDate))
+    .orderBy(desc(politicianOffices.startDate));
 
-  return officesResponse
+  return officesResponse;
 }
 
 export const politicianOfficeRepository = {

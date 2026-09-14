@@ -1,5 +1,6 @@
 import { PoliticianOfficeInsert, politicianOffices } from "../db/schema/politicians/politician-Offices";
-import { eq, and } from "drizzle-orm";
+import { offices } from '../db/schema/politicians/offices'
+import { eq, and, desc } from "drizzle-orm";
 import { Database } from "../db/types";
 
 const create = async (database: Database, politicianOffice: PoliticianOfficeInsert) => {
@@ -25,7 +26,33 @@ const getByDefinition = async (database: Database, politicianId: string, officeI
   return existing;
 };
 
+const getAllOnePoliticianOffices = async (database: Database, politicianId: string) => {
+  const [officesResponse] = await database
+    .select({
+      id: politicianOffices.id,
+      name: offices.name,
+      level: offices.level,
+      branch: offices.branch,
+      chamber: offices.chamber,
+      startDate: politicianOffices.startDate,
+      endDate: politicianOffices.endDate,
+      party: politicianOffices.party,
+    })
+    .from(politicianOffices)
+    .innerJoin(
+      offices,
+      eq(politicianOffices.politicianId, politicianId)
+    )
+    .where(
+      eq(politicianOffices.politicianId, politicianId)
+    )
+    .orderBy(desc(politicianOffices.startDate))
+
+  return officesResponse
+}
+
 export const politicianOfficeRepository = {
   create,
   getByDefinition,
+  getAllOnePoliticianOffices
 };

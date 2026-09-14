@@ -65,8 +65,23 @@ const getPoliticianBillsSponsor = async (req: Request, res: Response) => {
   return res.status(200).json(sponsorShips);
 };
 
+const getOnePoliticianOffices = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  if (typeof id !== "string" || !UUID_PATTERN.test(id)) {
+    return res.status(400).json({
+      message: "Invalid politician id",
+    });
+  }
+
+  const offices = await politicianReadService.getOnePoliticiansOffices(id);
+
+  return res.status(200).json(offices);
+}
+
 export const politicianController = {
   getSamplePolitician,
   getPoliticianById,
-  getPoliticianBillsSponsor
+  getPoliticianBillsSponsor,
+  getOnePoliticianOffices
 };

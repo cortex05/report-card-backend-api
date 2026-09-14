@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, count, eq, desc } from "drizzle-orm";
 import { bills, BillInsert } from "../db/schema/bills/bills";
 import { Database } from "../db/types";
 import { billSponsors } from "../db/schema/bills/bill-Sponsors";
@@ -59,9 +59,22 @@ const getByIdentifier = async (
 // For frontend
 const getPoliticianBillSponsorships = async (
   database: Database,
-  politicianId: string
+  politicianId: string,
+  page: number,
+  limit: number
 ) => {
-  return database
+  const offset = (page - 1) * limit;
+
+  const [{ total }] = await database
+    .select({ total: count() })
+    .from(bills)
+    .innerJoin(
+      billSponsors,
+      eq(billSponsors.billId, bills.id)
+    )
+    .where(eq(billSponsors.politicianId, politicianId));
+
+  const sponsorships = await database
     .select({
       id: bills.id,
       congress: bills.congress,
@@ -79,7 +92,15 @@ const getPoliticianBillSponsorships = async (
       billSponsors,
       eq(billSponsors.billId, bills.id)
     )
-    .where(eq(billSponsors.politicianId, politicianId));
+    .where(eq(billSponsors.politicianId, politicianId))
+    .orderBy(desc(bills.introducedDate), desc(bills.id))
+    .limit(limit)
+    .offset(offset);
+
+  return {
+    sponsorships,
+    total
+  }
 };
 
 export const billRepository = {

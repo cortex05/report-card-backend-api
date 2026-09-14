@@ -19,8 +19,20 @@ const getPoliticianById = async (id: string) => {
   return politicianRepository.getById(db, id);
 };
 
-const getPoliticianBillSponorships = async (id: string) => {
-  return billRepository.getPoliticianBillSponsorships(db, id);
+const getPoliticianBillSponorships = async (id: string, page: number, limit: number) => {
+  const sponsorsResponse = await billRepository.getPoliticianBillSponsorships(db, id, page, limit);
+
+  const totalPage = Math.ceil(sponsorsResponse.total / limit);
+  
+  return {
+    data: sponsorsResponse.sponsorships,
+    pagination: {
+      page,
+      limit,
+      total: sponsorsResponse.total,
+      totalPage
+    }
+  }
 }
 
 export const politicianReadService = {

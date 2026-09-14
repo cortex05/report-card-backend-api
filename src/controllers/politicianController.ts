@@ -38,6 +38,7 @@ const getPoliticianById = async (req: Request, res: Response) => {
 
 const getPoliticianBillsSponsor = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const { page, limit } = req.query;
 
   if (typeof id !== "string" || !UUID_PATTERN.test(id)) {
     return res.status(400).json({
@@ -45,13 +46,21 @@ const getPoliticianBillsSponsor = async (req: Request, res: Response) => {
     });
   }
 
-  const sponsorShips = await politicianReadService.getPoliticianBillSponorships(id);
+  const pageNumber = Number(page);
+  const limitNumber = Number(limit);
 
-  if (!sponsorShips) {
-    return res.status(404).json({
-      message: "No bill sponsorships found for this politician",
-    });
-  }
+  if (
+  !Number.isInteger(pageNumber) ||
+  pageNumber < 1 ||
+  !Number.isInteger(limitNumber) ||
+  limitNumber < 1
+) {
+  return res.status(400).json({
+    message: "Invalid page or limit value",
+  });
+}
+
+  const sponsorShips = await politicianReadService.getPoliticianBillSponorships(id, pageNumber, limitNumber);
 
   return res.status(200).json(sponsorShips);
 };

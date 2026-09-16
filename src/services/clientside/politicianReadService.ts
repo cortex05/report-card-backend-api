@@ -2,6 +2,7 @@ import { db } from "../../db";
 import { billRepository } from "../../repositories/billRepository";
 import { politicianOfficeRepository } from "../../repositories/politicianOfficeRepository";
 import { politicianRepository } from "../../repositories/politicianRepository";
+import { voteRecordRepository } from "../../repositories/voteRecordRepository";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -23,7 +24,7 @@ const getPoliticianById = async (id: string) => {
 const getPoliticianBillSponorships = async (id: string, page: number, limit: number) => {
   const sponsorsResponse = await billRepository.getPoliticianBillSponsorships(db, id, page, limit);
 
-  const totalPage = Math.ceil(sponsorsResponse.total / limit);
+  const totalPages = Math.ceil(sponsorsResponse.total / limit);
   
   return {
     data: sponsorsResponse.sponsorships,
@@ -31,7 +32,7 @@ const getPoliticianBillSponorships = async (id: string, page: number, limit: num
       page,
       limit,
       total: sponsorsResponse.total,
-      totalPage
+      totalPages
     }
   }
 }
@@ -40,9 +41,26 @@ const getOnePoliticiansOffices = async (id: string) => {
   return politicianOfficeRepository.getAllOnePoliticianOffices(db, id)
 }
 
+const getPoliticianVoteRecords = async (id: string, page: number, limit: number) => {
+  const voteRecordsResponse = await voteRecordRepository.getPoliticianVoteRecords(db, id, page, limit);
+
+  const totalPages = Math.ceil(voteRecordsResponse.total / limit);
+
+  return {
+    data: voteRecordsResponse.records,
+    pagination: {
+      page,
+      limit,
+      total: voteRecordsResponse.total,
+      totalPages
+    }
+  }
+}
+
 export const politicianReadService = {
   getSamplePolitician,
   getPoliticianById,
   getPoliticianBillSponorships,
-  getOnePoliticiansOffices
+  getOnePoliticiansOffices,
+  getPoliticianVoteRecords
 };

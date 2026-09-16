@@ -79,9 +79,39 @@ const getOnePoliticianOffices = async (req: Request, res: Response) => {
   return res.status(200).json(offices);
 }
 
+const getPoliticianVoteRecords = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { page, limit } = req.query;
+
+  if (typeof id !== "string" || !UUID_PATTERN.test(id)) {
+    return res.status(400).json({
+      message: "Invalid politician id",
+    });
+  }
+
+  const pageNumber = Number(page);
+  const limitNumber = Number(limit);
+
+  if (
+  !Number.isInteger(pageNumber) ||
+  pageNumber < 1 ||
+  !Number.isInteger(limitNumber) ||
+  limitNumber < 1
+) {
+  return res.status(400).json({
+    message: "Invalid page or limit value",
+  });
+}
+
+  const voteRecords = await politicianReadService.getPoliticianVoteRecords(id, pageNumber, limitNumber);
+
+  return res.status(200).json(voteRecords);
+};
+
 export const politicianController = {
   getSamplePolitician,
   getPoliticianById,
   getPoliticianBillsSponsor,
-  getOnePoliticianOffices
+  getOnePoliticianOffices,
+  getPoliticianVoteRecords
 };

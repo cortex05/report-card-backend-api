@@ -11,6 +11,6 @@ router.get("/:id", politicianController.getPoliticianById);
 router.get("/:id/bills", politicianController.getPoliticianBillsSponsor);
 router.get("/:id/offices", politicianController.getOnePoliticianOffices)
 
-// GET /politicians/:id/votes
+router.get("/:id/votes", politicianController.getPoliticianVoteRecords);
 
 export default router;

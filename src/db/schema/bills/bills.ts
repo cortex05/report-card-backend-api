@@ -16,7 +16,7 @@ export const bills = pgTable(
 
     introducedDate: date("introduced_date"),
 
-    status: varchar("status", { length: 100 }),
+    status: text("status"),
 
     originChamber: varchar("origin_chamber", { length: 50 }),
 
